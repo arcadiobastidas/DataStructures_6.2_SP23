@@ -19,6 +19,8 @@ class LinkedList : public ListInterface<ItemType>
 {
 private:
     Node<ItemType>* headPtr; // Pointer to first node in the chain;
+    //Node<ItemType>* tailPtr; //tailPtr points to the last node in the chain
+    //Node<ItemType>* dummyPtr;//dummyPtr points to the dummy node
     // (contains the first entry in the list)
     int itemCount;           // Current count of list items 
    
@@ -32,6 +34,7 @@ private:
 
 public:
     LinkedList();
+    //LinkedList(ItemType*hedPtr, ItemType*tailPtr,ItemType *dummyPtr, int itemCount);
     LinkedList(const LinkedList<ItemType>& aList);
     virtual ~LinkedList();
 
@@ -40,6 +43,7 @@ public:
     bool insert(int newPosition, const ItemType& newEntry) override;
     bool remove(int position) override;
     void clear() override;
+
    
     /** @throw PrecondViolatedExcep if position < 1 or 
                                        position > getLength(). */

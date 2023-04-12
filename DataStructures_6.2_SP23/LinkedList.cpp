@@ -9,11 +9,17 @@
 
 #include "LinkedList.h"  // Header file
 #include <cassert>
-  
+
 template<class ItemType>
-LinkedList<ItemType>::LinkedList() : headPtr(nullptr), itemCount(0)
+LinkedList<ItemType>::LinkedList() : headPtr(), itemCount(0)
 {
-}  // end default constructor
+   Node<ItemType>* dummyNode = new Node<ItemType>();
+   dummyNode->setNext(dummyNode); // set the next pointer to itself
+   headPtr = dummyNode; // set the head pointer to the dummy node
+}
+// end default constructor
+
+
 
 template<class ItemType>
 LinkedList<ItemType>::~LinkedList()
@@ -37,69 +43,57 @@ template<class ItemType>
 bool LinkedList<ItemType>::insert(int newPosition, const ItemType& newEntry)
 {
    bool ableToInsert = (newPosition >= 1) && (newPosition <= itemCount + 1);
-   if (ableToInsert)
-   {
-      // Create a new node containing the new entry 
-      Node<ItemType>* newNodePtr = new Node<ItemType>(newEntry);  
-      
-      // Attach new node to chain
-      if (newPosition == 1)
-      {
-         // Insert new node at beginning of chain
-         newNodePtr->setNext(headPtr); 
-         headPtr = newNodePtr;
-      }
-      else
-      {
-         // Find node that will be before new node
-         Node<ItemType>* prevPtr = getNodeAt(newPosition - 1);
-         
-         // Insert new node after node to which prevPtr points
-         newNodePtr->setNext(prevPtr->getNext()); 
-         prevPtr->setNext(newNodePtr);
-      }  // end if
+   if (ableToInsert) {
+      Node<ItemType>* newNodePtr = new Node<ItemType>(newEntry);
 
-      itemCount++;  // Increase count of entries
-   }  // end if
-   
+      if (newPosition == 1) {
+         newNodePtr->setNext(headPtr);
+         headPtr = newNodePtr;
+         getNodeAt(itemCount + 1)->setNext(headPtr); // update the dummy node's next pointer
+      } else {
+         Node<ItemType>* prevPtr = getNodeAt(newPosition - 1);
+         newNodePtr->setNext(prevPtr->getNext());
+         prevPtr->setNext(newNodePtr);
+         if (newPosition == itemCount + 1) {
+            getNodeAt(itemCount + 1)->setNext(headPtr); // update the dummy node's next pointer
+         }
+      }
+
+      itemCount++;
+   }
+
    return ableToInsert;
+   
 }  // end insert
 
 template<class ItemType>
 bool LinkedList<ItemType>::remove(int position)
 {
    bool ableToRemove = (position >= 1) && (position <= itemCount);
-   if (ableToRemove)
-   {
+   if (ableToRemove) {
       Node<ItemType>* curPtr = nullptr;
-      if (position == 1)
-      {
-         // Remove the first node in the chain
-         curPtr = headPtr; // Save pointer to node
+      if (position == 1) {
+         curPtr = headPtr;
          headPtr = headPtr->getNext();
-      }
-      else
-      {
-         // Find node that is before the one to delete
+         getNodeAt(itemCount)->setNext(headPtr); // update the dummy node's next pointer
+      } else {
          Node<ItemType>* prevPtr = getNodeAt(position - 1);
-         
-         // Point to node to delete
          curPtr = prevPtr->getNext();
-         
-         // Disconnect indicated node from chain by connecting the
-         // prior node with the one after
          prevPtr->setNext(curPtr->getNext());
-      }  // end if
-      
-      // Return node to system
+         if (position == itemCount) {
+            getNodeAt(itemCount)->setNext(headPtr); // update the dummy node's next pointer
+         }
+      }
+
       curPtr->setNext(nullptr);
       delete curPtr;
       curPtr = nullptr;
-      
-      itemCount--;  // Decrease count of entries
-   }  // end if
-   
+
+      itemCount--;
+   }
+
    return ableToRemove;
+
 }  // end remove
 
 template<class ItemType>
@@ -130,15 +124,17 @@ ItemType LinkedList<ItemType>::getEntry(int position) const throw(PrecondViolate
 template<class ItemType>
 Node<ItemType>* LinkedList<ItemType>::getNodeAt(int position) const
 {
-   // Debugging check of precondition
-   assert( (position >= 1) && (position <= itemCount) );
-   
-   // Count from the beginning of the chain
-   Node<ItemType>* curPtr = headPtr;
-   for (int skip = 1; skip < position; skip++)
-      curPtr = curPtr->getNext();
-      
-   return curPtr;
+   assert((position >= 1) && (position <= itemCount + 1));
+
+   if (position == itemCount + 1) {
+      return headPtr; // return the dummy node
+   } else {
+      Node<ItemType>* curPtr = headPtr;
+      for (int skip = 1; skip < position; skip++) {
+         curPtr = curPtr->getNext();
+      }
+      return curPtr;
+   }
 }  // end getNodeAt
 
 template<class ItemType>

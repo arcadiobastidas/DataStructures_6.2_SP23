@@ -154,12 +154,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CircularList.cpp" />
     <ClCompile Include="DataStructures_6._2_SP23.cpp" />
     <ClCompile Include="LinkedList.cpp" />
     <ClCompile Include="Node.cpp" />
     <ClCompile Include="PrecondViolatedExcep.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CircularList.h" />
     <ClInclude Include="LinkedList.h" />
     <ClInclude Include="ListInterface.h" />
     <ClInclude Include="Node.h" />
