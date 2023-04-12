@@ -11,11 +11,12 @@ int main()
 
     LinkedList<int> *integerList = new LinkedList<int>();
     CircularList<int> *circularList = new CircularList<int>();
-    circularList->insert(1,1);
+    circularList->insert(1,2);
     
     
     integerList->insert(1,1);
     integerList->display();
+    cout << circularList;
 
 
 
